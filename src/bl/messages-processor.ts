@@ -10,7 +10,7 @@ export class MessagesProcessor {
         // Init the thread pool (each call to 'this._staticPool.exec()' will
         // execute method 'processSync()' in async manner (i.e. in pool's thread).
         this._staticPool = new StaticPool<string, MessageType>({
-            size: physicalCpuCount,
+            size: physicalCpuCount || 1,
             task: MessagesProcessor.processSync
         });
     }
