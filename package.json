@@ -7,7 +7,9 @@
     "pg": "8.3.3",
     "express": "4.17.1",
     "body-parser": "1.19.0",
-    "express-promise": "0.4.0"
+    "express-promise": "0.4.0",
+    "node-worker-threads-pool": "1.4.2",
+    "physical-cpu-count": "2.0.0"
   },
   "devDependencies": {
     "ts-node": "9.0.0",
@@ -17,6 +19,6 @@
   },
   "scripts": {
     "build": "tsc -p .",
-    "start": "node build/app.js"    
+    "start": "node build/app.js"
   }
 }

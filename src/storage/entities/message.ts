@@ -1,6 +1,6 @@
 import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn} from "typeorm";
 
-export type MessageType = "Palindrome" | "NobPalindrome";
+export type MessageType = "Palindrome" | "NoPalindrome";
 
 @Entity({ name: "Messages" })
 export class Message {
@@ -14,6 +14,6 @@ export class Message {
   @Column()
   payload: string;
 
-  @Column()
+  @Column({nullable: true})
   type: MessageType;  
 }

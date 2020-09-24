@@ -34,16 +34,16 @@ export class MessagesRouter {
 
     // Update a single message with id
     router.put("/:id", (req: Request, res: Response) => {
-      if (req.body.payload) {
+      if (req.body.type) {
         res.sendStatus(400);
         return;
       }
-      if (!req.body.type) {
+      if (!req.body.payload) {
         res.sendStatus(400);
         return;
-      }
+      }      
       let message = new Message();
-      message.type = req.body.type;
+      message.payload = req.body.payload;
       res.json(controller.update(parseInt(req.params.id), message));
     });  
 
