@@ -2,7 +2,7 @@ import express, { Express } from "express";
 import Router from "express-promise-router";
 import { json } from "body-parser";
 import console from "console";
-import { MessagesRouter } from "./routers/messages-router";
+import { MessagesRouter } from "../routers/messages-router";
 
 const PORT = 8080;
 

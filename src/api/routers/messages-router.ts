@@ -1,6 +1,6 @@
 import { Express, Router, Request, Response } from "express";
 import { FindManyOptions } from "typeorm";
-import { MessagesController } from "../../bl/messages-controller";
+import { MessagesController } from "../../bl/controllers/messages-controller";
 import { Message, MessageType } from "../../storage/entities/message";
 import ParsedQs from "qs";
 

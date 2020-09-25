@@ -1,7 +1,7 @@
 import { FindManyOptions, Repository } from "typeorm";
-import { Message, MessageType } from "../storage/entities/message";
-import { Db } from "../storage/db";
-import { MessagesProcessor } from "./messages-processor";
+import { Message, MessageType } from "../../storage/entities/message";
+import { Db } from "../../storage/infra/db";
+import { MessagesProcessor } from "../infra/messages-processor";
 
 export class MessagesController {
   private _repository: Repository<Message>;

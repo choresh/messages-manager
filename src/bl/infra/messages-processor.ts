@@ -1,4 +1,4 @@
-import { MessageType } from "../storage/entities/message";
+import { MessageType } from "../../storage/entities/message";
 import { StaticPool } from  "node-worker-threads-pool";
 const physicalCpuCount = require('physical-cpu-count');
 

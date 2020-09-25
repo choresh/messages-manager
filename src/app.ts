@@ -1,5 +1,5 @@
-import { Server } from "./api/server";
-import { Db } from "./storage/db";
+import { Server } from "./api/Infra/server";
+import { Db } from "./storage/infra/db";
 
 class App {
   public static run(): void {
