@@ -1,4 +1,4 @@
-import { Server } from "./api/Infra/server";
+import { Server } from "./api/infra/server";
 import { Db } from "./storage/infra/db";
 
 class App {
