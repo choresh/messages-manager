@@ -1,7 +1,7 @@
 import { Express, Router, Request, Response } from "express";
 import { FindManyOptions } from "typeorm";
 import { MessagesController } from "../../bl/messages-controller";
-import { Message } from "../../storage/entities/message";
+import { Message, MessageType } from "../../storage/entities/message";
 import ParsedQs from "qs";
 
 export class MessagesRouter {
@@ -99,36 +99,50 @@ export class MessagesRouter {
   private static getOptions(
     query: ParsedQs.ParsedQs
   ): FindManyOptions<Message> {
+    let options: FindManyOptions<Message>;
     if (Object.keys(query).length !== 0) {
-      if (Object.keys(query).length > 1) {
-        throw new Error("Only one parameter is allowed");
+      if (query.sort) {
+        var parmTokens: string[] = (<string>query.sort).split(":");
+        if (parmTokens[0] !== "date") {
+          throw new Error("Value for 'sort' can only be 'date'");
+        }
+        var order: "ASC" | "DESC";
+        switch (parmTokens[1]) {
+          case "asc":
+            order = "ASC";
+            break;
+          case "desc":
+            order = "DESC";
+            break;
+          default:
+            throw new Error("Value for 'sort' should ended with ':asc' or ':desc'");
+        }
+        options = {
+          order: {
+            date: order
+          },
+        };
+      } else if (query.type) {
+        let type: MessageType;
+        switch (query.type) {
+          case "NoPalindrome":
+            type = "NoPalindrome";
+            break;
+          case "Palindrome":
+            type = "Palindrome";
+            break;
+          default:
+            throw new Error("Value for 'type' can only be 'Palindrome' or 'NoPalindrome'");
+        }
+        options = {
+          where: {
+            type: type
+          }
+        };
+      } else {
+        throw new Error("Only 'sort' and/or 'type' parameters are allowed"); 
       }
-      if (!query.sort) {
-        throw new Error("Only 'sort' parameter is allowed");
-      }
-      var parmTokens: string[] = (<string>query.sort).split(":");
-      if (parmTokens[0] !== "date") {
-        throw new Error("Value for 'sort' can only be 'date'");
-      }
-      var order: "ASC" | "DESC";
-      switch (parmTokens[1]) {
-        case "asc":
-          order = "ASC";
-          break;
-        case "desc":
-          order = "DESC";
-          break;
-        default:
-          throw new Error(
-            "Value for 'sort' should ended with ':asc' or ':desc'"
-          );
-      }
-      let options: FindManyOptions<Message> = {
-        order: {
-          date: order,
-        },
-      };
-      return options;
     }
+    return options;
   }
 }
