@@ -1,57 +1,134 @@
 import { Express, Router, Request, Response } from "express";
+import { FindManyOptions } from "typeorm";
 import { MessagesController } from "../../bl/messages-controller";
 import { Message } from "../../storage/entities/message";
+import ParsedQs from "qs";
 
 export class MessagesRouter {
-  public static run(app: Express): void {
-    var router: Router = Router();
+
+  public static run(app: Express, router: Router): void {
     var controller: MessagesController = new MessagesController();
 
     // Create a new message
-    router.post("/", (req: Request, res: Response) => {
+    router.post("/", async (req: Request, res: Response) => {
       if (req.body.type) {
-        res.sendStatus(400);
+        res.status(400).send("Body property 'type' is not allowed");
         return;
       }
       if (!req.body.payload) {
-        res.sendStatus(400);
+        res.status(400).send("Body property 'payload' is missing");
         return;
       }
       const message = new Message();
       message.payload = req.body.payload;
-      res.json(controller.create(message));
+      var result = await controller.create(message);     
+      res.status(201).json(result);
     });
 
-    // Retrieve all messages
-    router.get('/', (req: Request, res: Response) => {
-      res.json(controller.getAll());
+    // * Retrieve all messages (with/without query).
+    // * Currenty, the supported query syntax is very basic (only '?sort=date:desc' or '?sort=date:asc').
+    router.get("/", async (req: Request, res: Response) => {
+      let options: FindManyOptions<Message>;
+      try {
+        options = this.getOptions(req.query);
+      } catch (err) {
+        res.status(400).send(err.message);
+        return;
+      }
+      var result = await controller.getAll(options);
+      res.json(result);
     });
-   
+
     // Retrieve a single message with id
-    router.get('/:id', (req: Request, res: Response) => {
-      res.json(controller.get(parseInt(req.params.id)));
-    });    
+    router.get("/:id", async (req: Request, res: Response) => {
+      let messageId: number = parseInt(req.params.id);
+      if (isNaN(messageId)) {
+        res.status(400).send("URL token for message Id is not a number");
+        return;
+      }
+      var result = await controller.get(messageId);
+      if (!result) {
+        res.status(404).send("Message with Id '" + messageId + "' not found");
+      }
+      res.json(result);
+    });
 
     // Update a single message with id
-    router.put("/:id", (req: Request, res: Response) => {
+    router.put("/:id", async (req: Request, res: Response) => {
+      let messageId: number = parseInt(req.params.id);
+      if (isNaN(messageId)) {
+        res.status(400).send("URL token for message Id is not a number");
+        return;
+      }
       if (req.body.type) {
-        res.sendStatus(400);
+        res.status(400).send("Body property 'type' is not allowed");
         return;
       }
       if (!req.body.payload) {
-        res.sendStatus(400);
+        res.status(400).send("Body property 'payload' is missing");
         return;
-      }      
+      }
       let message = new Message();
       message.payload = req.body.payload;
-      res.json(controller.update(parseInt(req.params.id), message));
-    });  
+      var result = await controller.update(messageId, message);
+      if (!result) {
+        res.status(404).send("Message with Id '" + messageId + "' not found");
+      }
+      res.json(result);
+    });
 
     // Delete a single message with id
-    router.delete("/:id", (req: Request, res: Response) => {
-      res.json(controller.delete(parseInt(req.params.id)));
-    });  
-   
+    router.delete("/:id", async (req: Request, res: Response) => {
+      let messageId: number = parseInt(req.params.id);
+      if (isNaN(messageId)) {
+        res.status(400).send("URL token for message Id is not a number");
+        return;
+      }
+      var result = await controller.delete(messageId);
+      if (!result) {
+        res.status(404).send("Message with Id '" + messageId + "' not found");
+      }
+      res.json(result);
+    });
+
     app.use("/api/messages", router);
+  }
+
+  // * Convert query from REST API terms ('ParsedQs') to DB terms ('FindManyOptions').
+  // * Currenty, the supported query syntax is very basic (only '?sort=date:desc' or '?sort=date:asc').
+  private static getOptions(
+    query: ParsedQs.ParsedQs
+  ): FindManyOptions<Message> {
+    if (Object.keys(query).length !== 0) {
+      if (Object.keys(query).length > 1) {
+        throw new Error("Only one parameter is allowed");
+      }
+      if (!query.sort) {
+        throw new Error("Only 'sort' parameter is allowed");
+      }
+      var parmTokens: string[] = (<string>query.sort).split(":");
+      if (parmTokens[0] !== "date") {
+        throw new Error("Value for 'sort' can only be 'date'");
+      }
+      var order: "ASC" | "DESC";
+      switch (parmTokens[1]) {
+        case "asc":
+          order = "ASC";
+          break;
+        case "desc":
+          order = "DESC";
+          break;
+        default:
+          throw new Error(
+            "Value for 'sort' should ended with ':asc' or ':desc'"
+          );
+      }
+      let options: FindManyOptions<Message> = {
+        order: {
+          date: order,
+        },
+      };
+      return options;
+    }
   }
 }

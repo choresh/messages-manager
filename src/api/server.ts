@@ -1,13 +1,14 @@
 import express, { Express } from "express";
+import Router from "express-promise-router";
 import { json } from "body-parser";
 import console from "console";
-import expressPromise from "express-promise";
 import { MessagesRouter } from "./routers/messages-router";
 
 const PORT = 8080;
 
 export class Server {
   private static _app: Express = express();
+  private static _router = Router();
 
   public static async run(): Promise<void> {
 
@@ -15,10 +16,10 @@ export class Server {
     this._app.use(json());
   
     // Enable easy conversion from 'Promise' to express midleware
-    this._app.use(expressPromise());
+    this._app.use(this._router);
 
     // Attach routers (cuurently - only one)
-    MessagesRouter.run(this._app);
+    MessagesRouter.run(this._app, this._router);
     
     // Start listen for requests
     return new Promise((resolve, reject) => {
