@@ -60,7 +60,7 @@ messages, specifically whether or not a message is a palindrome.
             * **Express**: 3rd party, general server framework.
             * **Server**: our thin costomize layer above Express.
             * **Routers**: each of which responsible for routing related to specific resource. Currenly exist only the **Messages Router**. 
-        * **BL** layer: responsible for the busness logic. It receivess parsed request from the upper layer (the Api layer), handle the logig, and while need to store/retrive persistent data - call the coresspond code at the lower layer - the **Storage** layer. Its main components are:
+        * **BL** layer: responsible for the busness logic. It receivess parsed request from the upper layer (the Api layer), handle the logic, and while need to store/retrive persistent data - call the coresspond code at the lower layer - the **Storage** layer. Its main components are:
             * **Controllers**: each of which responsible for logic of specific resource. Currenly exist only the **Messages Controller**.
             * **Infra**: contains componnets which assists the controllers, currentle exists only the **Messages Processor**, which responsibe for calculation of the message type (yes/no palindrome).
         * **Storage** layer: responsible to store/retrive the persistent data. It receives calls from the upperr layer (the Bl layer). Its main components are:
@@ -79,20 +79,23 @@ This incomplete state of the message will be reflected in 2 places:
         * Pros:
             * It validate that all works fine in the cloud environment.   
             * It enable to consume the service from all over the world.
+            * No need of any local installation.
         * Cons:
             * Uncomfortable for development process (edit/run/debug).    
     * **Running the application in docker machine (see 'C' below):**
         * Pros:
-            * No need to install Postgres on your machine.
-            * It validate that resulted dockerized version is OK.    
+            * Comaring to local machine - no need to install Postgres on your machine.
+            * Comaring to local machine - it validate that resulted dockerized version is OK.    
         * Cons:
-            * Uncomfortable for development process (edit/run/debug).     
+            * Comaring to local machine - uncomfortable for development process (edit/run/debug).
+            * Comparing to cloud - it does not validate that all works fine in the cloud environment.        
     * **Running the application in local machine (see 'D' below):**
         * Pros:
             * Comfortable for development process (edit/run/debug).     
         * Cons:
             * Need to install Postgres on your machine.
             * It does not validate that resulted dockerized version is OK.
+            * It does not validate that all works fine in the cloud environment.
 
 6) Some other notes:
     * Current DB configuration - clearing the DB at each run (see comments, at initialization of 'ConnectionOptions', at file 'src\storage\Infra\db.ts').
@@ -141,6 +144,7 @@ npm run start
 ~~~
 npm run test
 ~~~
+* Note: current testing code clears the DB (actually - the Messages table) at each run of the tests.
 
 ## F) Using the application's CLI
 TODO
