@@ -53,42 +53,56 @@ messages, specifically whether or not a message is a palindrome.
                 * ?type=Palindrome&sort=date:asc
                 * ?type=NoPalindrome&sort=date:asc
 
-3) In order to achive high performance, **calculation of message type (Palindrome/NoPalindrome) performed at backround**. This mean that while client recive a response for creation or updating of a meeesge - the message type is not calculated yet, i.e. **the calculated value will be inserted to DB a bit later, and in the meantime it will have 'null' value**.
+3) Architecture:
+    * The application entry point is class 'src\app.ts', it holds and launch the application's DB and apllication's Server.
+    * Below the entry point we have 3 layers:
+        * **Api** layer: responsible to receive incomming REST API request, parse the request data (budy/params/query), and call the coresspond code at the lower layer - the **Bl** layer. Its main components are:
+            * **Express**: 3rd party, general server framework.
+            * **Server**: our thin costomize layer above Express.
+            * **Routers**: each of which responsible for routing related to specific resource. Currenly exist only the **Messages Router**. 
+        * **BL** layer: responsible for the busness logic. It receivess parsed request from the upper layer (the Api layer), handle the logig, and while need to store/retrive persistent data - call the coresspond code at the lower layer - the **Storage** layer. Its main components are:
+            * **Controllers**: each of which responsible for logic of specific resource. Currenly exist only the **Messages Controller**.
+            * **Infra**: contains componnets which assists the controllers, currentle exists only the **Messages Processor**, which responsibe for calculation of the message type (yes/no palindrome).
+        * **Storage** layer: responsible to store/retrive the persistent data. It receives calls from the upperr layer (the Bl layer). Its main components are:
+            * **Type ORM**: 3rd party, general ORM framework, above **Postgres**. It uses the entities classes (i.e. TS schemas) to build the DB's schemas, and privide typed api while need to access the data.
+            * **DB**: our thin customize layer above Type ORM.
+            * **Entities**: each of which represnt a specific resource. Currenly exist only the **Message**. 
+    * More details - see file 'Architecture Diagram.docx' in current folder.
+
+4) In order to achive high performance, **calculation of message type (Palindrome/NoPalindrome) performed at backround**. This mean that while client recive a response for creation or updating of a meeesge - the message type is not calculated yet, i.e. **the calculated value will be inserted to DB a bit later, and in the meantime it will have 'null' value**.
 This incomplete state of the message will be reflected in 2 places:
     * At response of the relevant creation/updating operation. Here the 'type' will alwys be 'null'.
     * At response to retrieve message(s), or delete message. Here the 'type' may or may not be 'null'.
 
-4) The application may run in 3 deferent environments:
-    * **Running the application in the cloud:**
+5) The application may run in 3 deferent environments:
+    * **Running the application in the cloud (see 'B' below):**
         * Pros:
             * It validate that all works fine in the cloud environment.   
             * It enable to consume the service from all over the world.
         * Cons:
             * Uncomfortable for development process (edit/run/debug).    
-    * **Running the application in docker machine:**
+    * **Running the application in docker machine (see 'C' below):**
         * Pros:
-            * No need to install postgres on your machine.
+            * No need to install Postgres on your machine.
             * It validate that resulted dockerized version is OK.    
         * Cons:
             * Uncomfortable for development process (edit/run/debug).     
-    * **Running the application in local machine:**
+    * **Running the application in local machine (see 'D' below):**
         * Pros:
             * Comfortable for development process (edit/run/debug).     
         * Cons:
-            * Need to install postgres on your machine.
+            * Need to install Postgres on your machine.
             * It does not validate that resulted dockerized version is OK.
 
-5) Some other notes:
-    * For architectural overview - see file 'Architecture Diagram.docx' in current folder. 
+6) Some other notes:
     * Current DB configuration - clearing the DB at each run (see comments, at initialization of 'ConnectionOptions', at file 'src\storage\Infra\db.ts').
     * Non-completed parts of the code marked with 'TODO'.
 
 
-
-## B) Running the application in the cloud
+## B) Running the application in the **cloud**
 TODO
       
-## C) Running the application in docker machine
+## C) Running the application in **docker machine**
 
 ### Prerequisite installations:
 * Install Docker (e.g. 'Docker Desktop for Windows' - https://hub.docker.com/editions/community/docker-ce-desktop-windows).
@@ -100,7 +114,7 @@ docker-compose up --build
 ~~~
 * See the appendix below for some more useful Docker commands.
 
-## D) Running the application in local machine
+## D) Running the application in **local machine**
 
 ### Prerequisite installations:
 * Install NodeJs - https://nodejs.org/en/download.
