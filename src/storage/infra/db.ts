@@ -25,17 +25,18 @@ export class Db {
     // developer runs the service locally, out of docker macine).
     let host: string = process.env.PG_HOST || "localhost";
     
-    // TODO: currently most of the values are hard-coded - this it temp solution, a
-    // beter one will be to pass them as env variables (especially - the password!).
+    // * TODO: currently most of the values are hard-coded - this it temp solution, a
+    //   beter one will be to pass them as env variables (especially - the password!).
+    // * More about those options - see here: https://typeorm.io/#/connection-options.    
     const options: ConnectionOptions = {
       type: "postgres",
       host: host,
       port: 5432,
       username: "postgres",
-      password: "postgres",
+      password: "postgres", // Hard-coded password (TODO: not for pruduction!!!)
       database: "messages-manager",
-      synchronize: true,
-      dropSchema: true,
+      synchronize: true, // Indicates if database schema should be auto created on every application launch (TODO: not for pruduction!!!)
+      dropSchema: true, // Drops the schema each time connection is being established (TODO: not for pruduction!!!)
       logging: false,
       entities: [
         "build/storage/entities/*.js"

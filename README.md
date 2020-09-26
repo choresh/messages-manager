@@ -37,15 +37,15 @@ messages, specifically whether or not a message is a palindrome.
         * URL: http://\<host\>:8080/api/messages
         * Body: N.A.
         * Query params: 
-            * Get all messages, without filtering/sorting:
+            * Retrieve all messages, without filtering/sorting:
                 * No query params
-            * Get all 'Palindrome' messages:
+            * Retrieve all 'Palindrome' messages:
                 * ?type=Palindrome
-            * Get all 'NoPalindrome' messages:
+            * Retrieve all 'NoPalindrome' messages:
                 * ?type=NoPalindrome
-            * Get all messages, sorted by date, in descending order:
+            * Retrieve all messages, sorted by date, in descending order:
                 * ?sort=date:desc
-            * Get all messages, sorted by date, in ascending order:
+            * Retrieve all messages, sorted by date, in ascending order:
                 * ?sort=date:asc
             * It is possible to combine the 'type' and 'sort' queries, e.i. any of those 4 combinations is valid:
                 * ?type=Palindrome&sort=date:desc
@@ -78,7 +78,12 @@ This incomplete state of the message will be reflected in 2 places:
             * Need to install postgres on your machine.
             * It does not validate that resulted dockerized version is OK.
 
-5) For architectural overview - see file 'Architecture Diagram.docx' in current folder. 
+5) Some other notes:
+    * For architectural overview - see file 'Architecture Diagram.docx' in current folder. 
+    * Current DB configuration - clearing the DB at each run (see comments, at initialization of 'ConnectionOptions', at file 'src\storage\Infra\db.ts').
+    * Non-completed parts of the code marked with 'TODO'.
+
+
 
 ## B) Running the application in the cloud
 TODO
@@ -86,31 +91,31 @@ TODO
 ## C) Running the application in docker machine
 
 ### Prerequisite installations:
-- Install Docker (e.g. 'Docker Desktop for Windows' - https://hub.docker.com/editions/community/docker-ce-desktop-windows).
+* Install Docker (e.g. 'Docker Desktop for Windows' - https://hub.docker.com/editions/community/docker-ce-desktop-windows).
 
-### Install, build and run the running multi-container Docker applications (Postgres + Messags Manager):
-- Go to root folder of the app (the folder where file 'docker-compose.yml' located), and execute the following command:
+### Install, build and run the multi-container Docker applications (Postgres + Messags Manager):
+* Go to root folder of the app (the folder where file 'docker-compose.yml' located), and execute the following command:
 ~~~
 docker-compose up --build
 ~~~
-- See the appendix below for some more useful Docker commands.
+* See the appendix below for some more useful Docker commands.
 
 ## D) Running the application in local machine
 
 ### Prerequisite installations:
-- Install NodeJs - https://nodejs.org/en/download.
-- Install Postgres -https://www.postgresql.org.
+* Install NodeJs - https://nodejs.org/en/download.
+* Install Postgres - https://www.postgresql.org.
 
 ### Create the 'Postgres' database:
-- Open the 'pgAdmin' app (part of the 'Postgres' installation).
-- Go to: Databases -> right click -> Create -> DataBase, and create new data base with:
-    - name: messages-manager.
-    - port: 5432.
-    - username: postgres.
-    - password: postgres.
+* Open the 'pgAdmin' app (part of the 'Postgres' installation).
+* Go to: Databases -> right click -> Create -> DataBase, and create new data base with:
+    * name: messages-manager.
+    * port: 5432.
+    * username: postgres.
+    * password: postgres.
 
 ### Install, build and run the multi-parts local applications (Postgres + Messags Manager):
-- Go to root folder of the app (the folder where file 'package.json' located), and execute the following commands sequence:
+* Go to root folder of the app (the folder where file 'package.json' located), and execute the following commands sequence:
 ~~~
 npm install
 npm run build
@@ -118,7 +123,10 @@ npm run start
 ~~~
 
 ## E) Testing the application
-TODO
+* while the application is running (in docker machine (see 'C' above) or in local machine (see 'D' above)) - execute the following command:
+~~~
+npm run test
+~~~
 
 ## F) Using the application's CLI
 TODO
