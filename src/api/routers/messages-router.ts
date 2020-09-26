@@ -95,12 +95,14 @@ export class MessagesRouter {
   }
 
   // * Convert query from REST API terms ('ParsedQs') to DB terms ('FindManyOptions').
-  // * Currenty, the supported query syntax is very basic (only '?sort=date:desc' or '?sort=date:asc').
+  // * Currenty, the supported query syntax is very basic (only '?sort=date:desc' / '?sort=date:asc'
+  //   and/or '?type=Palindrome' / '?type=NoPalindrome').
   private static getOptions(
     query: ParsedQs.ParsedQs
   ): FindManyOptions<Message> {
     let options: FindManyOptions<Message>;
     if (Object.keys(query).length !== 0) {
+      options = {};
       if (query.sort) {
         var parmTokens: string[] = (<string>query.sort).split(":");
         if (parmTokens[0] !== "date") {
@@ -117,12 +119,11 @@ export class MessagesRouter {
           default:
             throw new Error("Value for 'sort' should ended with ':asc' or ':desc'");
         }
-        options = {
-          order: {
+        options.order = {
             date: order
-          },
         };
-      } else if (query.type) {
+      }
+      if (query.type) {
         let type: MessageType;
         switch (query.type) {
           case "NoPalindrome":
@@ -134,12 +135,11 @@ export class MessagesRouter {
           default:
             throw new Error("Value for 'type' can only be 'Palindrome' or 'NoPalindrome'");
         }
-        options = {
-          where: {
+        options.where = {
             type: type
-          }
-        };
-      } else {
+        }
+      }
+      if (Object.keys(options).length === 0) {
         throw new Error("Only 'sort' and/or 'type' parameters are allowed"); 
       }
     }
