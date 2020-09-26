@@ -25,7 +25,7 @@
   },
   "scripts": {
     "build": "tsc -p .",
-    "start": "node build/app.js",
+    "start": "node build/src/app.js",
     "test": "mocha build/tests/spec.js"
   }
 }

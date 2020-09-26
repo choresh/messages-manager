@@ -39,7 +39,7 @@ export class Db {
       dropSchema: true, // Drops the schema each time connection is being established (TODO: not for pruduction!!!)
       logging: false,
       entities: [
-        "build/storage/entities/*.js"
+        "build/src/storage/entities/*.js"
       ]      
     };
 
