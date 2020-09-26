@@ -123,7 +123,7 @@ npm run start
 ~~~
 
 ## E) Testing the application
-* while the application is running (in docker machine (see 'C' above) or in local machine (see 'D' above)) - execute the following command:
+* While the application is running (in docker machine (see 'C' above) or in local machine (see 'D' above)) - execute the following command:
 ~~~
 npm run test
 ~~~
