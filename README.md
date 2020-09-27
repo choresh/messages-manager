@@ -67,57 +67,44 @@ messages, specifically whether or not a message is a palindrome.
             * **Type ORM**: 3rd party, general ORM framework, above **Postgres**. It uses the entities classes (i.e. TS schemas) to build the DB's schemas, and privide typed api while need to access the data.
             * **DB**: our thin customize layer above Type ORM.
             * **Entities**: each of which represnt a specific resource. Currenly exist only the **Message**. 
-    * More details - see file 'Architecture Diagram.docx' in current folder.
+    * More details - see file 'Architecture Diagram.docx' in sub folder 'docs'.
 
 4) In order to achive high performance, **calculation of message type (Palindrome/NoPalindrome) performed at backround**. This mean that while client recive a response for creation or updating of a meeesge - the message type is not calculated yet, i.e. **the calculated value will be inserted to DB a bit later, and in the meantime it will have 'null' value**.
 This incomplete state of the message will be reflected in 2 places:
     * At response of the relevant creation/updating operation. Here the 'type' will alwys be 'null'.
     * At response to retrieve message(s), or delete message. Here the 'type' may or may not be 'null'.
 
-5) The application may run in 3 deferent environments:
-    * **Running the application in the cloud (see 'B' below):**
+5) The application may run in 2 deferent environments:   
+    * **Running the application in docker machine (see 'B' below):**
         * Pros:
-            * It validate that all works fine in the cloud environment.   
-            * It enable to consume the service from all over the world.
-            * No need of any local installation.
+            * No need to install Postgres on your machine.
+            * It validate that resulted dockerized version is OK.    
         * Cons:
-            * Uncomfortable for development process (edit/run/debug).    
-    * **Running the application in docker machine (see 'C' below):**
-        * Pros:
-            * Comaring to local machine - no need to install Postgres on your machine.
-            * Comaring to local machine - it validate that resulted dockerized version is OK.    
-        * Cons:
-            * Comaring to local machine - uncomfortable for development process (edit/run/debug).
-            * Comparing to cloud - it does not validate that all works fine in the cloud environment.        
-    * **Running the application in local machine (see 'D' below):**
+            * Uncomfortable for development process (edit/run/debug).
+    * **Running the application in local machine (see 'C' below):**
         * Pros:
             * Comfortable for development process (edit/run/debug).     
         * Cons:
             * Need to install Postgres on your machine.
             * It does not validate that resulted dockerized version is OK.
-            * It does not validate that all works fine in the cloud environment.
 
 6) Some other notes:
     * Current DB configuration - clearing the DB at each run (see comments, at initialization of 'ConnectionOptions', at file 'src\storage\Infra\db.ts').
     * Non-completed parts of the code marked with 'TODO'.
-
-
-## B) Running the application in the **cloud**
-TODO
-      
-## C) Running the application in **docker machine**
+    
+## B) Running the application in **docker machine**
 
 ### Prerequisite installations:
-* Install Docker (e.g. 'Docker Desktop for Windows' - https://hub.docker.com/editions/community/docker-ce-desktop-windows).
+* Install Docker engine (e.g. 'Docker Desktop for Windows' - https://hub.docker.com/editions/community/docker-ce-desktop-windows).
 
-### Install, build and run the multi-container Docker applications (Postgres + Messags Manager):
+### Install, build and run the multi-container Docker applications (Postgres + Messages Manager):
 * Go to root folder of the app (the folder where file 'docker-compose.yml' located), and execute the following command:
 ~~~
 docker-compose up --build
 ~~~
 * See the appendix below for some more useful Docker commands.
 
-## D) Running the application in **local machine**
+## C) Running the application in **local machine**
 
 ### Prerequisite installations:
 * Install NodeJs - https://nodejs.org/en/download.
@@ -139,17 +126,17 @@ npm run build
 npm run start
 ~~~
 
-## E) Testing the application
-* While the application is running (in docker machine (see 'C' above) or in local machine (see 'D' above)) - execute the following command:
+## D) Testing the application
+* This should done while the application is running (in docker machine (see 'B' above) or in local machine (see 'C' above)).
+* Go to root folder of the app (the folder where file 'package.json' located), and execute the following commands sequence (install/build commands - only if not executed yet, they require because they install and build also the testing code):
 ~~~
+npm install
+npm run build
 npm run test
 ~~~
 * Note: current testing code clears the DB (actually - the Messages table) at each run of the tests.
 
-## F) Using the application's CLI
-TODO
-
-## G) Appendix
+## E) Appendix
 
 ### Other useful Docker commands
 
