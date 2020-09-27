@@ -13,7 +13,7 @@ messages, specifically whether or not a message is a palindrome.
 
 2) The exposed WEB API:
     * Create message: 
-        * Method: GET
+        * Method: POST
         * URL: http://\<host\>:8080/api/messages
         * Body: {"payload": "\<payload\>"}
         * Query params: N.A.
