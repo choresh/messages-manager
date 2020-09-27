@@ -19,17 +19,17 @@ messages, specifically whether or not a message is a palindrome.
         * Query params: N.A.
     * Update specific message:
         * Method: PUT
-        * URL: http://\<host\>:8080/api/messages\<message id\>
+        * URL: http://\<host\>:8080/api/messages/\<message id\>
         * Body: {"payload": "\<payload\>"}
         * Query params: N.A.
     * Delete specific message:
         * Method: DELETE
-        * URL: http://\<host\>:8080/api/messages\<message id\>
+        * URL: http://\<host\>:8080/api/messages/\<message id\>
         * Body: N.A.
         * Query params: N.A.
     * Retrieve specific message:
         * Method: GET
-        * URL: http://\<host\>:8080/api/messages\<message id\>
+        * URL: http://\<host\>:8080/api/messages/\<message id\>
         * Body: N.A.
         * Query params: N.A.
     * Retrieve all/some/sorted messages:
