@@ -1,16 +1,16 @@
 {
-    "family": "msg-mgr",
+    "family": "ms-mn",
     "executionRoleArn": "arn:aws:iam::015776309570:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
     "containerDefinitions": [
         {
-            "name": "msg-mgr",
-            "image": "015776309570.dkr.ecr.us-east-2.amazonaws.com/msg-mgr:latest",
+            "name": "ms-mn",
+            "image": "015776309570.dkr.ecr.us-east-2.amazonaws.com/ms-mn:latest",
             "portMappings": [
                 {
-                    "containerPort": 3000,
-                    "hostPort": 3000,
-                    "protocol": "tcp"
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "protocol": "http"
                 }
             ],
             "essential": true
